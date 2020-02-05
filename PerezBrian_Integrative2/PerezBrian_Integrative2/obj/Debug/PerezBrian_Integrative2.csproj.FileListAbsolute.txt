@@ -1,0 +1,16 @@
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/bin/Debug/PerezBrian_Integrative2.exe.config
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/bin/Debug/PerezBrian_Integrative2.exe
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/bin/Debug/PerezBrian_Integrative2.pdb
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/obj/Debug/PerezBrian_Integrative2.csprojAssemblyReference.cache
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/obj/Debug/PerezBrian_Integrative2.csproj.CopyComplete
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/obj/Debug/PerezBrian_Integrative2.exe
+/Users/brianperez/Desktop/VMwareSharedStuff/PerezBrian_Integrative2/PerezBrian_Integrative2/obj/Debug/PerezBrian_Integrative2.pdb
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\bin\Debug\PerezBrian_Integrative2.exe.config
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\bin\Debug\PerezBrian_Integrative2.exe
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\bin\Debug\PerezBrian_Integrative2.pdb
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\bin\Debug\MySql.Data.dll
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\obj\Debug\PerezBrian_Integrative2.csproj.CoreCompileInputs.cache
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\obj\Debug\PerezBrian_Integrative2.csproj.CopyComplete
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\obj\Debug\PerezBrian_Integrative2.exe
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\obj\Debug\PerezBrian_Integrative2.pdb
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_Integrative2\PerezBrian_Integrative2\obj\Debug\PerezBrian_Integrative2.csprojAssemblyReference.cache

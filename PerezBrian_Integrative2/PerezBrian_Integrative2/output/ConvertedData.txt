@@ -1,0 +1,19 @@
+{
+ResaurantProfiles:[
+{
+1
+1770 House
+143 Main Street East Hampton, NY 11937
+(631) 324-1770
+Open daily at 5:30 PM
+$50 and over
+East Hampton
+Contemporary American
+1.00
+4.00
+3.00
+2.00
+2.50
+5.00
+],
+}

@@ -1,0 +1,19 @@
+﻿<Properties StartupConfiguration="{E76AA02C-C6DC-4B4F-8AE3-A13AA8646052}|Default">
+  <MonoDevelop.Ide.ItemProperties.PerezBrian__Integrative2 PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PerezBrian_Integrative2/DataWriting.cs">
+    <Files>
+      <File FileName="PerezBrian_Integrative2/DataWriting.cs" Line="41" Column="31" />
+      <File FileName="PerezBrian_Integrative2/Menu.cs" />
+      <File FileName="PerezBrian_Integrative2/Menu2.cs" />
+      <File FileName="PerezBrian_Integrative2/Program.cs" />
+      <File FileName="PerezBrian_Integrative2/Validation.cs" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <Debugger.DebugSourceFolders />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
