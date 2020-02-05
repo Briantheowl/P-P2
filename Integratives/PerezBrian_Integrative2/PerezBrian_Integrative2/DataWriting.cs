@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Data.Sql;
+using System.Data;
 using System.IO;
 
 namespace PerezBrian_Integrative2
@@ -27,15 +29,14 @@ namespace PerezBrian_Integrative2
         private Menu _myMenu3 = new Menu("Show the best(5 star ratings)", "Show 4 stars and up", "Show 3 stars and up", "Show the worst(1 star ratings)", "Show unrated(not rated)", "Back");
         private string _directory = @"..\..\output\";
         private string _file = @"info.json";
-
-        //dictionary to hold values of id and other values in database
-        Dictionary<string, List<string>> DbInfo = new Dictionary<string, List<string>>();
-        //dictionary to hold values of names and ratings of resaurants
-        Dictionary<string, double> Rratings = new Dictionary<string, double>();
+        //List to be populated with database info
+        List<Restaurant> restaurantList = new List<Restaurant>();
 
 
-        //Variable to be overwritten during conditionals loop
-        string starRating = "";
+        //Declaring connection class
+        DBConn _connected;
+
+
 
         //Constructor for class
         public DataWriting()
@@ -106,82 +107,37 @@ namespace PerezBrian_Integrative2
 
         private void JsonConversion()
         {
-            //Console.Clear();
+            Console.Clear();
 
             Console.WriteLine("Start\n");
 
-            // MySQL Database Connection String
-            string cs = @"server= 10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
+            //instantiating Connection class
+            _connected = new DBConn();
 
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
+            //Running select statement through class object fields
+            _connected.Query("SELECT * FROM RestaurantProfiles");
 
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
+            //Variable used to conatin all information of table
+            DataTable TempTable = _connected.QueryEx();
 
-            DbInfo.Add("id", new List<string>());
-            DbInfo.Add("RestaurantName", new List<string>());
-            DbInfo.Add("Address", new List<string>());
-            DbInfo.Add("Phone", new List<string>());
-            DbInfo.Add("HoursOfOperation", new List<string>());
-            DbInfo.Add("Price", new List<string>());
-            DbInfo.Add("USACityLocation", new List<string>());
-            DbInfo.Add("Cuisine", new List<string>());
-            DbInfo.Add("FoodRating", new List<string>());
-            DbInfo.Add("ServiceRating", new List<string>());
-            DbInfo.Add("AmbienceRating", new List<string>());
-            DbInfo.Add("ValueRating", new List<string>());
-            DbInfo.Add("OverallRating", new List<string>());
-            DbInfo.Add("OverallPossibleRating", new List<string>());
-
-            try
+            for (int i = 0; i < TempTable.Rows.Count; i++)
             {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
+                //tryparcing numerical values to be able to convert to json format
+                decimal.TryParse(TempTable.Rows[i]["Price"].ToString(), out decimal price);
+                double.TryParse(TempTable.Rows[i]["FoodRating"].ToString(), out double foodrating);
+                double.TryParse(TempTable.Rows[i]["ServiceRating"].ToString(), out double servicerating);
+                double.TryParse(TempTable.Rows[i]["AmbienceRating"].ToString(), out double ambiencerating);
+                double.TryParse(TempTable.Rows[i]["ValueRating"].ToString(), out double valuerating);
+                double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
+                double.TryParse(TempTable.Rows[i]["OverallPossibleRating"].ToString(), out double overallpossiblerating);
 
-                // Form SQL Statement
-                stm = "SELECT * FROM RestaurantProfiles";
+                Restaurant r = new Restaurant(TempTable.Rows[i]["id"].ToString(), TempTable.Rows[i]["RestaurantName"].ToString(), TempTable.Rows[i]["Address"].ToString(),
+                    TempTable.Rows[i]["Phone"].ToString(), TempTable.Rows[i]["HoursOfOperation"].ToString(), price, TempTable.Rows[i]["USACityLocation"].ToString(),
+                    TempTable.Rows[i]["Cuisine"].ToString(), foodrating, servicerating, ambiencerating, valuerating, overallrating, overallpossiblerating);
 
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-                Console.WriteLine("Executed Reader");
-                while (rdr.Read())
-                {
-                    DbInfo["id"].Add(rdr["id"].ToString());
-                    DbInfo["RestaurantName"].Add(rdr["RestaurantName"].ToString());
-                    DbInfo["Address"].Add(rdr["Address"].ToString());
-                    DbInfo["Phone"].Add(rdr["Phone"].ToString());
-                    DbInfo["HoursOfOperation"].Add(rdr["HoursOfOperation"].ToString());
-                    DbInfo["Price"].Add(rdr["Price"].ToString());
-                    DbInfo["USACityLocation"].Add(rdr["USACityLocation"].ToString());
-                    DbInfo["Cuisine"].Add(rdr["Cuisine"].ToString());
-                    DbInfo["FoodRating"].Add(rdr["FoodRating"].ToString());
-                    DbInfo["ServiceRating"].Add(rdr["ServiceRating"].ToString());
-                    DbInfo["AmbienceRating"].Add(rdr["AmbienceRating"].ToString());
-                    DbInfo["ValueRating"].Add(rdr["ValueRating"].ToString());
-                    DbInfo["OverallRating"].Add(rdr["OverallRating"].ToString());
-                    DbInfo["OverallPossibleRating"].Add(rdr["OverallPossibleRating"].ToString());
-
-                }
-                rdr.Close();
-                //Console.WriteLine("Finished Populating Dictionary");
+                restaurantList.Add(r);
             }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-            }
+
 
 
             using (StreamWriter sw = new StreamWriter(_directory + "info.json"))
@@ -193,29 +149,26 @@ namespace PerezBrian_Integrative2
                 //open bracket for each row
                 sw.WriteLine("{");
 
-                //counter for  list index 
-                int counter = 0;
 
-                foreach (string item in DbInfo["id"])
+                for (int i = 0; i < restaurantList.Count; i++)
                 {
-                    //sw.WriteLine($"\"name\": \"{employee.Name}\",");
-                    sw.WriteLine($"\"id\": \"{DbInfo["id"][counter].ToString()}\",");
-                    sw.WriteLine($"\"RestaurantName\": \"{DbInfo["RestaurantName"][counter].ToString()}\",");
-                    sw.WriteLine($"\"Address\": \"{DbInfo["Address"][counter].ToString()}\",");
-                    sw.WriteLine($"\"Phone\": \"{DbInfo["Phone"][counter].ToString()}\",");
-                    sw.WriteLine($"\"HoursOfOperation\": \"{DbInfo["HoursOfOperation"][counter].ToString()}\",");
-                    sw.WriteLine($"\"Price\": \"{DbInfo["Price"][counter].ToString()}\",");
-                    sw.WriteLine($"\"USACityLocation\": \"{DbInfo["USACityLocation"][counter].ToString()}\",");
-                    sw.WriteLine($"\"Cuisine\": \"{DbInfo["Cuisine"][counter].ToString()}\",");
-                    sw.WriteLine($"\"FoodRating\": \"{DbInfo["FoodRating"][counter].ToString()}\",");
-                    sw.WriteLine($"\"ServiceRating\": \"{DbInfo["ServiceRating"][counter].ToString()}\",");
-                    sw.WriteLine($"\"AmbienceRating\": \"{DbInfo["AmbienceRating"][counter].ToString()}\",");
-                    sw.WriteLine($"\"ValueRating\": \"{DbInfo["ValueRating"][counter].ToString()}\",");
-                    sw.WriteLine($"\"OverallRating\": \"{DbInfo["OverallRating"][counter].ToString()}\",");
-                    sw.WriteLine($"\"OverallPossibleRating\": \"{DbInfo["OverallPossibleRating"][counter].ToString()}\"");
-
+                    sw.Write($"\"id\": \"{restaurantList[i].Id}\",");
+                    sw.Write($"\"Restaurant\": \"{restaurantList[i].RestaurantName}\",");
+                    sw.Write($"\"Address\": \"{restaurantList[i].Address}\",");
+                    sw.Write($"\"Phone\": \"{restaurantList[i].Phone}\",");
+                    sw.Write($"\"HoursOfOpereation\": \"{restaurantList[i].HoursOfOperation}\",");
+                    sw.Write($"\"Price\": \"{restaurantList[i].Price}\",");
+                    sw.Write($"\"USACityLocation\": \"{restaurantList[i].USACityLocation}\",");
+                    sw.Write($"\"Cuisine\": \"{restaurantList[i].Cuisine}\",");
+                    sw.Write($"\"FoodRating\": \"{restaurantList[i].FoodRating}\",");
+                    sw.Write($"\"ServiceRating\": \"{restaurantList[i].ServiceRating}\",");
+                    sw.Write($"\"AmbienceRating\": \"{restaurantList[i].AmbienceRating}\",");
+                    sw.Write($"\"ValueRating\": \"{restaurantList[i].ValueRating}\",");
+                    sw.Write($"\"OverallRating\": \"{restaurantList[i].OverallRating}\",");
+                    sw.Write($"\"OverallPossibleRating\": \"{restaurantList[i].OverallPossibleRating}\"");
+                    
                     //check for whether last brace in data set will have a comma or not
-                    if (DbInfo["id"].Count == counter + 1)
+                    if (i == restaurantList.Count - 1)
                     {
                         sw.WriteLine("}");
                     }
@@ -224,27 +177,22 @@ namespace PerezBrian_Integrative2
                         sw.WriteLine("},");
                     }
 
-                    if (DbInfo["id"].Count == counter + 1)
-                    {
-                        //sw.WriteLine();
-                    }
-                    else
+                    if (i != restaurantList.Count - 1)
                     {
                         sw.WriteLine("{");
                     }
-
-
-                    counter++;
                 }
-
                 //add the last bracket in data set
                 sw.WriteLine("]");
+
                 //close brace for entire JSON file
                 sw.WriteLine("}");
 
                 sw.Close();
             }
         }
+
+
         //method for easier implementation of switch statement use
         private void Selection2()
         {
@@ -258,22 +206,22 @@ namespace PerezBrian_Integrative2
             {
                 case 1:
                     //Running method for alphabetical order
-                    RestaurantRatings();
+                    //RestaurantRatings();
                     break;
 
                 case 2:
                     //Running method for reverse alphabetical order
-                    ReverseRestaurantRatings();
+                    //ReverseRestaurantRatings();
                     break;
 
                 case 3:
                     //Running method for best to worst based on star rating
-                    BestToWorse();
+                    //BestToWorse();
                     break;
 
                 case 4:
                     //Running method for worst to best based on star rating
-                    WorstToBest();
+                    //WorstToBest();
                     break;
 
                 case 5:
@@ -299,405 +247,6 @@ namespace PerezBrian_Integrative2
             }
         }
 
-        private void RestaurantRatings()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-
-
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-
-
-            string Rname;
-            double Orating;
-
-
-
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " ORDER BY RestaurantName ASC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    if (Rratings.ContainsKey("id"))
-                    {
-
-                    }
-                    else
-                    {
-                        Rname = rdr["RestaurantName"].ToString();
-                        double.TryParse(rdr["OverallRating"].ToString(), out Orating);
-                        Rratings.Add(Rname, Orating);
-                    }
-                }
-
-                //Foreach loop used to check for rating value
-                //to add the appropriate star value
-
-                foreach (var item in Rratings)
-                {
-                    //Conditionals checking for OverallRating
-                    if (item.Value > 4.60)
-                    {
-                        starRating = "*****";
-                    }
-                    else if (item.Value > 3.60)
-                    {
-                        starRating = "****";
-                    }
-                    else if (item.Value > 2.60)
-                    {
-                        starRating = "***";
-                    }
-                    else if (item.Value > 1.60)
-                    {
-                        starRating = "**";
-                    }
-                    else if (item.Value > 0.60)
-                    {
-                        starRating = "*";
-                    }
-                    else
-                    {
-                        starRating = "";
-                    }
-
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-                //Selection2();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            _myMenu2.Display();
-            Selection2();
-        }
-
-        private void ReverseRestaurantRatings()
-        {
-
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-
-
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-
-
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = " SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " ORDER BY RestaurantName DESC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                   
-                }
-
-                //Foreach loop used to check for rating value
-                //to add the appropriate star value
-
-                foreach (var item in Rratings)
-                {
-                    //Conditionals checking for OverallRating
-                    if (item.Value > 4.60)
-                    {
-                        starRating = "*****";
-                    }
-                    else if (item.Value > 3.60)
-                    {
-                        starRating = "****";
-                    }
-                    else if (item.Value > 2.60)
-                    {
-                        starRating = "***";
-                    }
-                    else if (item.Value > 1.60)
-                    {
-                        starRating = "**";
-                    }
-                    else if (item.Value > 0.60)
-                    {
-                        starRating = "*";
-                    }
-                    else
-                    {
-                        starRating = "";
-                    }
-
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            _myMenu2.Display();
-            Selection2();
-
-
-
-
-
-            foreach (KeyValuePair<string, double> item in Rratings)
-            {
-                //Writing out all three values to console
-                Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-            }
-
-        }
-
-        private void BestToWorse()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server= 10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-        
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-            
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " ORDER BY OverallRating DESC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    
-                    //Foreach loop used to check for rating value
-                    //to add the appropriate star value
-                    foreach (var item in Rratings)
-                    {
-                        //Conditionals checking for OverallRating
-                        if (item.Value > 4.60)
-                        {
-                            starRating = "*****";
-                        }
-                        else if (item.Value > 3.60)
-                        {
-                            starRating = "****";
-                        }
-                        else if (item.Value > 2.60)
-                        {
-                            starRating = "***";
-                        }
-                        else if (item.Value > 1.60)
-                        {
-                            starRating = "**";
-                        }
-                        else if (item.Value > 0.60)
-                        {
-                            starRating = "*";
-                        }
-                        else
-                        {
-                            starRating = "";
-                        }
-
-                        //Writing out all three values to console
-                        Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                    }
-                    rdr.Close();
-
-                }
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-        }
-
-        private void WorstToBest()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-
-
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-            
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " ORDER BY OverallRating ASC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    
-                }
-
-                //Foreach loop used to check for rating value
-                //to add the appropriate star value
-
-                foreach (var item in Rratings)
-                {
-                    //Conditionals checking for OverallRating
-                    if (item.Value > 4.60)
-                    {
-                        starRating = "*****";
-                    }
-                    else if (item.Value > 3.60)
-                    {
-                        starRating = "****";
-                    }
-                    else if (item.Value > 2.60)
-                    {
-                        starRating = "***";
-                    }
-                    else if (item.Value > 1.60)
-                    {
-                        starRating = "**";
-                    }
-                    else if (item.Value > 0.60)
-                    {
-                        starRating = "*";
-                    }
-                    else
-                    {
-                        starRating = "";
-                    }
-
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-                //Selection2();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-
-        }
         //method for easier implementation of switch statement use
         private void Selection3()
         {
@@ -711,27 +260,27 @@ namespace PerezBrian_Integrative2
             {
                 case 1:
                     //show the best (5 stars)
-                    ShowBest();
+                    //ShowBest();
                     break;
 
                 case 2:
                     //show 4 and above 
-                    ShowFourAndUp();
+                    //ShowFourAndUp();
                     break;
 
                 case 3:
                     //show 3 and above
-                    ShowThreeAndUp();
+                    //ShowThreeAndUp();
                     break;
 
                 case 4:
                     //show the worst(1 star)
-                    ShowWorst();
+                    //ShowWorst();
                     break;
 
                 case 5:
                     //show unrated(not rated)
-                    ShowUnrated();
+                    //ShowUnrated();
                     break;
 
                 case 6:
@@ -749,399 +298,16 @@ namespace PerezBrian_Integrative2
             }
         }
 
-        private void ShowBest()
-        {
-            Console.WriteLine("Start\n");
 
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
 
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
 
 
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-            
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " WHERE OverallRating = 5.00 ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    
-                }
-
-                //Foreach loop used to check for rating value to add the appropriate star value
-                foreach (var item in Rratings)
-                {
-                    //setting star value to 5 by defualt since we are 
-                    //only showing the best 
-                    starRating = "*****";
-
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-
-        }
-
-        private void ShowFourAndUp()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-
-
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-
-
-            string Rname;
-            double Orating;
-
-
-
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " WHERE OverallRating > 3.60 " +
-                    " ORDER BY OverallRating ASC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    //Conditional for duplicate key entries error
-                    if (Rratings.ContainsKey("RestaurantName"))
-                    {
-
-                    }
-                    else
-                    {
-                        Rname = rdr["RestaurantName"].ToString();
-                        double.TryParse(rdr["OverallRating"].ToString(), out Orating);
-                        Rratings.Add(Rname, Orating);
-                    }
-
-
-                }
-
-
-
-                foreach (var item in Rratings)
-                {
-                    //Conditional used to write out star ratings in console
-                    if (item.Value > 3.60 || item.Value < 4.40)
-                    {
-                        starRating = "****";
-                    }
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-                //Selection2();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-        }
-
-        private void ShowThreeAndUp()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-
-
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-
-
-            string Rname;
-            double Orating;
-
-
-
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " WHERE OverallRating > 2.60 " +
-                    " ORDER BY OverallRating ASC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                    //Conditional for duplicate key entries error
-                    if (!Rratings.ContainsKey("RestaurantName"))
-                    {
-
-                    }
-                    else
-                    {
-                        Rname = rdr["RestaurantName"].ToString();
-                        double.TryParse(rdr["OverallRating"].ToString(), out Orating);
-                        Rratings.Add(Rname, Orating);
-                    }
-                }
-                //Foreach loop used to check for rating value
-                //to add the appropriate star value
-
-                foreach (var item in Rratings)
-                {
-                    //Conditional used to write out star ratings in console
-                    if (item.Value > 2.60 || item.Value <= 3.40)
-                    {
-                        starRating = "***";
-                    }
-
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-                //Selection2();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-        }
-
-        private void ShowWorst()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-            
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-            
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " ORDER BY OverallRating ASC ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                   
-                }
-
-
-
-                foreach (var item in Rratings)
-                {
-                    //Conditional used to write out star ratings in console
-                    if (item.Value > 0.60 || item.Value < 1.50)
-                    {
-                        starRating = "*";
-                    }
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-                //Selection2();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-        }
-
-        private void ShowUnrated()
-        {
-            Console.WriteLine("Start\n");
-
-            // MySQL Database Connection String
-            string cs = @"server=  10.63.41.76;username=brianPerez;password=root;database=SampleRestaurant;port=8889";
-
-            // Declare a MySQL Connection
-            MySqlConnection conn = null;
-            
-            string stm;
-            MySqlCommand cmd;
-            MySqlDataReader rdr;
-            
-            try
-            {
-                // Open a connection to MySQL
-                conn = new MySqlConnection(cs);
-                conn.Open();
-
-                // Form SQL Statement
-                stm = "SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                    " WHERE OverallRating IS NULL ";
-
-                // Prepare SQL Statement
-                cmd = new MySqlCommand(stm, conn);
-
-                // Execute SQL statement and place the returned data into rdr
-                rdr = cmd.ExecuteReader();
-
-                while (rdr.Read())
-                {
-                   
-                }
-
-                //Foreach loop used to check for rating value to add the appropriate star value
-                foreach (var item in Rratings)
-                {
-                    //Writing out all three values to console
-                    Console.WriteLine($"{ item.Key,-2} {Math.Round(item.Value, 0)}/5 {starRating,-2}");
-                }
-                rdr.Close();
-            }
-            catch (MySqlException ex)
-            {
-                Console.WriteLine("Error: {0}", ex.Message);
-            }
-            finally
-            {
-                if (conn != null)
-                {
-                    conn.Close();
-                }
-
-            }
-            Console.WriteLine("Press any key to return to the Data Sorting menu...");
-
-            Console.ReadKey();
-
-            Console.Clear();
-
-            _myMenu2.Display();
-            Selection2();
-        }
     }
-}  
-    
+}
 
 
-         
+
+
+
+
+
