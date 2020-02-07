@@ -45,6 +45,12 @@ namespace PerezBrian_Integrative2
 
         }
 
+        public Restaurant(string RestaurantName, double OverallRating)
+        {
+            _RestaurantName = RestaurantName;
+            _OverallRating = OverallRating;
+        }
+
         public string Id { get => _id; }
         public string RestaurantName { get => _RestaurantName; }
         public string Address { get => _Address; }

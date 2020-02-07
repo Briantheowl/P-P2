@@ -12,14 +12,14 @@ namespace PerezBrian_Integrative2
         private MySqlConnection _conn;
         //variable used to activate the command line
         public MySqlCommand _cmd;
-        //variable to fill and update datsets
+        //variable to fill and update datasets
         private MySqlDataAdapter _da;
-        //variable to hold central object
+        //variable to hold central object of database as a whole
         private DataTable _dt;
 
         public DBConn()
         {
-            _conn = new MySqlConnection(@"server=10.63.12.88;username=brianPerez;password=root;database=SampleRestaurant;port=8889");
+            _conn = new MySqlConnection(@"server= 10.63.40.200;username=brianPerez;password=root;database=SampleRestaurant;port=8889");
             _conn.Open();
         } 
 

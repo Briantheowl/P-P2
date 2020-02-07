@@ -131,10 +131,12 @@ namespace PerezBrian_Integrative2
                 double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
                 double.TryParse(TempTable.Rows[i]["OverallPossibleRating"].ToString(), out double overallpossiblerating);
 
+                //Creating Restaurant object structure to store all database entries
                 Restaurant r = new Restaurant(TempTable.Rows[i]["id"].ToString(), TempTable.Rows[i]["RestaurantName"].ToString(), TempTable.Rows[i]["Address"].ToString(),
                     TempTable.Rows[i]["Phone"].ToString(), TempTable.Rows[i]["HoursOfOperation"].ToString(), price, TempTable.Rows[i]["USACityLocation"].ToString(),
                     TempTable.Rows[i]["Cuisine"].ToString(), foodrating, servicerating, ambiencerating, valuerating, overallrating, overallpossiblerating);
 
+                //Adding all restaurants created to the restaurant list
                 restaurantList.Add(r);
             }
 
@@ -166,7 +168,7 @@ namespace PerezBrian_Integrative2
                     sw.Write($"\"ValueRating\": \"{restaurantList[i].ValueRating}\",");
                     sw.Write($"\"OverallRating\": \"{restaurantList[i].OverallRating}\",");
                     sw.Write($"\"OverallPossibleRating\": \"{restaurantList[i].OverallPossibleRating}\"");
-                    
+
                     //check for whether last brace in data set will have a comma or not
                     if (i == restaurantList.Count - 1)
                     {
@@ -206,22 +208,22 @@ namespace PerezBrian_Integrative2
             {
                 case 1:
                     //Running method for alphabetical order
-                    //RestaurantRatings();
+                    Alphabetical();
                     break;
 
                 case 2:
                     //Running method for reverse alphabetical order
-                    //ReverseRestaurantRatings();
+                    ReverseAlphabetical();
                     break;
 
                 case 3:
                     //Running method for best to worst based on star rating
-                    //BestToWorse();
+                    BestToWorst();
                     break;
 
                 case 4:
                     //Running method for worst to best based on star rating
-                    //WorstToBest();
+                    WorstToBest();
                     break;
 
                 case 5:
@@ -298,10 +300,155 @@ namespace PerezBrian_Integrative2
             }
         }
 
+        private void Alphabetical()
+        {
+            Console.Clear();
+
+            Console.WriteLine("Start\n");
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //Running select statement through class object fields
+            _connected.Query(" SELECT RestaurantName,OverallRating FROM RestaurantProfiles " +
+                " ORDER BY RestaurantName ASC ");
+
+            //Variable used to conatin all information of table
+            DataTable TempTable = _connected.QueryEx();
+
+            for (int i = 0; i < TempTable.Rows.Count; i++)
+            {
+                //Tryparsing the number value to be displayed as a string in console
+                double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
+
+                //Creating Restaurant object structure to store all database entries
+                Restaurant r = new Restaurant(TempTable.Rows[i]["RestaurantName"].ToString(), Math.Round(overallrating, 0));
+
+                //Adding all restaurants created to the restaurant list
+                restaurantList.Add(r);
+
+                //writing out to the console all the restaurants with overall rating and star ratings
+                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
+
+                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+
+                Stars.DrawStars(restaurantList[i].OverallRating);
+
+            }
+
+        }
+
+        private void ReverseAlphabetical()
+        {
+            Console.Clear();
+
+            Console.WriteLine("Start\n");
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //Running select statement through class object fields
+            _connected.Query("SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
+                " ORDER BY RestaurantName " +
+                "DESC ");
+
+            //Variable used to conatin all information of table
+            DataTable TempTable = _connected.QueryEx();
+
+            for (int i = 0; i < TempTable.Rows.Count; i++)
+            {
+                //Tryparsing the number value to be displayed as a string in console
+                double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
+
+                //Creating Restaurant object structure to store all database entries
+                Restaurant r = new Restaurant(TempTable.Rows[i]["RestaurantName"].ToString(), Math.Round(overallrating, 0));
+
+                //Adding all restaurants created to the restaurant list
+                restaurantList.Add(r);
+
+                //writing out to the console all the restaurants with overall rating and star ratings
+                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
+
+                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+
+                Stars.DrawStars(restaurantList[i].OverallRating);
+
+            }
+        }
+
+        private void BestToWorst()
+        {
+            Console.Clear();
+
+            Console.WriteLine("Start\n");
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //Running select statement through class object fields
+            _connected.Query("SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
+                " ORDER BY OverallRating DESC ");
+
+            //Variable used to conatin all information of table
+            DataTable TempTable = _connected.QueryEx();
+
+            for (int i = 0; i < TempTable.Rows.Count; i++)
+            {
+                //Tryparsing the number value to be displayed as a string in console
+                double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
+
+                //Creating Restaurant object structure to store all database entries
+                Restaurant r = new Restaurant(TempTable.Rows[i]["RestaurantName"].ToString(), Math.Round(overallrating, 0));
+
+                //Adding all restaurants created to the restaurant list
+                restaurantList.Add(r);
+
+                //writing out to the console all the restaurants with overall rating and star ratings
+                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
+
+                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+
+                Stars.DrawStars(restaurantList[i].OverallRating);
+            }
 
 
+        }
 
+        private void WorstToBest()
+        {
+            Console.Clear();
 
+            Console.WriteLine("Start\n");
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //Running select statement through class object fields
+            _connected.Query("SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
+                " ORDER BY OverallRating ASC ");
+
+            //Variable used to conatin all information of table
+            DataTable TempTable = _connected.QueryEx();
+
+            for (int i = 0; i < TempTable.Rows.Count; i++)
+            {
+                //Tryparsing the number value to be displayed as a string in console
+                double.TryParse(TempTable.Rows[i]["OverallRating"].ToString(), out double overallrating);
+
+                //Creating Restaurant object structure to store all database entries
+                Restaurant r = new Restaurant(TempTable.Rows[i]["RestaurantName"].ToString(), Math.Round(overallrating, 0));
+
+                //Adding all restaurants created to the restaurant list
+                restaurantList.Add(r);
+
+                //writing out to the console all the restaurants with overall rating and star ratings
+                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
+
+                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+
+                Stars.DrawStars(restaurantList[i].OverallRating);
+            }
+        }
     }
 }
 
