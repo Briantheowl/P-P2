@@ -83,7 +83,8 @@ namespace PerezBrian_Integrative2
                     break;
 
                 case 5:
-
+                    //exiting the program
+                    Environment.Exit(0);
                     break;
 
                 case 6:
@@ -233,6 +234,7 @@ namespace PerezBrian_Integrative2
 
                 case 6:
                     //exiting the program
+                    Environment.Exit(0);
                     break;
 
                 default:
@@ -304,6 +306,8 @@ namespace PerezBrian_Integrative2
         {
             Console.Clear();
 
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -333,14 +337,20 @@ namespace PerezBrian_Integrative2
                 Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
-
             }
+            Console.WriteLine("Press any key to return to the data sorting menu");
 
+            Console.ReadKey();
+
+            _myMenu2.Display();
+            Selection2();
         }
 
         private void ReverseAlphabetical()
         {
             Console.Clear();
+
+            restaurantList.Clear();
 
             Console.WriteLine("Start\n");
 
@@ -349,8 +359,7 @@ namespace PerezBrian_Integrative2
 
             //Running select statement through class object fields
             _connected.Query("SELECT RestaurantName,OverallRating FROM RestaurantProfiles" +
-                " ORDER BY RestaurantName " +
-                "DESC ");
+                " ORDER BY RestaurantName DESC ");
 
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
@@ -372,13 +381,20 @@ namespace PerezBrian_Integrative2
                 Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
-
             }
+            Console.WriteLine("Press any key to return to the data sorting menu");
+
+            Console.ReadKey();
+
+            _myMenu2.Display();
+            Selection2();
         }
 
         private void BestToWorst()
         {
             Console.Clear();
+
+            restaurantList.Clear();
 
             Console.WriteLine("Start\n");
 
@@ -410,13 +426,19 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the data sorting menu");
 
+            Console.ReadKey();
 
+            _myMenu2.Display();
+            Selection2();
         }
 
         private void WorstToBest()
         {
             Console.Clear();
+
+            restaurantList.Clear();
 
             Console.WriteLine("Start\n");
 
@@ -448,10 +470,18 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the data sorting menu");
+
+            Console.ReadKey();
+
+            _myMenu2.Display();
+            Selection2();
         }
 
         private void ShowBestOnly()
         {
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -482,10 +512,18 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the Rating sort menu");
+
+            Console.ReadKey();
+
+            _myMenu3.Display();
+            Selection3();
         }
 
         private void ShowFourAndUp()
         {
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -517,10 +555,18 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the Rating sort menu");
+
+            Console.ReadKey();
+
+            _myMenu3.Display();
+            Selection3();
         }
 
         private void ShowThreeAndUp()
         {
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -552,10 +598,18 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the Rating sort menu");
+
+            Console.ReadKey();
+
+            _myMenu3.Display();
+            Selection3();
         }
 
         private void ShowWorst()
         {
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -587,10 +641,18 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the Rating sort menu");
+
+            Console.ReadKey();
+
+            _myMenu3.Display();
+            Selection3();
         }
 
         private void ShowUnrated()
         {
+            restaurantList.Clear();
+
             Console.WriteLine("Start\n");
 
             //instantiating Connection class
@@ -621,6 +683,12 @@ namespace PerezBrian_Integrative2
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
+            Console.WriteLine("Press any key to return to the Rating sort menu");
+
+            Console.ReadKey();
+
+            _myMenu3.Display();
+            Selection3();
         }
     }
 }

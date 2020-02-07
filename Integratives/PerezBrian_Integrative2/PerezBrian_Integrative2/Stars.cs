@@ -20,30 +20,30 @@ namespace PerezBrian_Integrative2
             else if (overallrating >= 3.50 && overallrating < 4.40)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("****");
+                Console.Write("****");
                 Console.ForegroundColor = ConsoleColor.White;
-                //Console.Write("*");
+                Console.WriteLine("*");
             }
             else if (overallrating >= 2.50 && overallrating < 3.40)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("***");  
+                Console.Write("***");  
                 Console.ForegroundColor = ConsoleColor.White;
-                //Console.Write("**");
+                Console.WriteLine("**");
             }
             else if (overallrating >= 1.50 && overallrating < 2.40)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("**");  
+                Console.Write("**");  
                 Console.ForegroundColor = ConsoleColor.White;
-                //Console.Write("***");
+                Console.WriteLine("***");
             }
             else if (overallrating >= 0.50 && overallrating < 1.40)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("*");  
+                Console.Write("*");  
                 Console.ForegroundColor = ConsoleColor.White;
-                //Console.Write("****");
+                Console.WriteLine("****");
             }
             else
             {
