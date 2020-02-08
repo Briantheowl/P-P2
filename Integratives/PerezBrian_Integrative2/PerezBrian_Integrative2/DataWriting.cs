@@ -35,9 +35,7 @@ namespace PerezBrian_Integrative2
 
         //Declaring connection class
         DBConn _connected;
-
-
-
+        
         //Constructor for class
         public DataWriting()
         {
@@ -59,7 +57,7 @@ namespace PerezBrian_Integrative2
             Selection();
         }
 
-        //method for easier implementation of switch statement use 
+        //Method for easier implementation of switch statement use 
         private void Selection()
         {
             int selection = Validation.ValidateInt("Hello Admin, What would you like to do today?");
@@ -106,6 +104,7 @@ namespace PerezBrian_Integrative2
             }
         }
 
+        //Method for conversion of database into JSON Format
         private void JsonConversion()
         {
             Console.Clear();
@@ -194,9 +193,8 @@ namespace PerezBrian_Integrative2
                 sw.Close();
             }
         }
-
-
-        //method for easier implementation of switch statement use
+        
+        //Method for easier implementation of switch statement use
         private void Selection2()
         {
             Console.Clear();
@@ -251,14 +249,14 @@ namespace PerezBrian_Integrative2
             }
         }
 
-        //method for easier implementation of switch statement use
+        //Method for easier implementation of switch statement use
         private void Selection3()
         {
             Console.Clear();
 
             _myMenu3.Display();
 
-            int selection3 = Validation.ValidateInt("Please choose how you want the data to be shown");
+            int selection3 = Validation.ValidateInt("How would you like the data to be shown...");
 
             switch (selection3)
             {
@@ -298,10 +296,15 @@ namespace PerezBrian_Integrative2
 
                     Console.WriteLine("Please only choose an option on the menu...");
 
+                    Console.ReadKey();
+
+                    _myMenu3.Display();
+                    Selection3();
                     break;
             }
         }
 
+        //Method for sorting the data in alphabetical order
         private void Alphabetical()
         {
             Console.Clear();
@@ -320,6 +323,9 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name", -40} {"Rating", -10} {"Stars", 13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -332,9 +338,7 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
@@ -346,6 +350,7 @@ namespace PerezBrian_Integrative2
             Selection2();
         }
 
+        //Method for sorting the data in reverse alphabetical order
         private void ReverseAlphabetical()
         {
             Console.Clear();
@@ -364,6 +369,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -376,9 +385,7 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
 
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
@@ -390,6 +397,7 @@ namespace PerezBrian_Integrative2
             Selection2();
         }
 
+        //Method for sorting the data from best to worse based on overall rating
         private void BestToWorst()
         {
             Console.Clear();
@@ -408,6 +416,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -420,10 +432,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the data sorting menu");
@@ -434,6 +444,7 @@ namespace PerezBrian_Integrative2
             Selection2();
         }
 
+        //Method for sorting the data from worst to best based on overall rating
         private void WorstToBest()
         {
             Console.Clear();
@@ -452,6 +463,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -464,10 +479,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the data sorting menu");
@@ -478,6 +491,7 @@ namespace PerezBrian_Integrative2
             Selection2();
         }
 
+        //Method for sorting the data based on the best overall rating ONLY
         private void ShowBestOnly()
         {
             restaurantList.Clear();
@@ -494,6 +508,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -506,10 +524,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the Rating sort menu");
@@ -520,6 +536,7 @@ namespace PerezBrian_Integrative2
             Selection3();
         }
 
+        //Method for sorting the data based on the overall rating that is 4 and above
         private void ShowFourAndUp()
         {
             restaurantList.Clear();
@@ -537,6 +554,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -549,10 +570,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the Rating sort menu");
@@ -563,6 +582,7 @@ namespace PerezBrian_Integrative2
             Selection3();
         }
 
+        //Method for sorting the data based on the overall rating that is 3 and above
         private void ShowThreeAndUp()
         {
             restaurantList.Clear();
@@ -580,6 +600,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -592,10 +616,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the Rating sort menu");
@@ -606,6 +628,7 @@ namespace PerezBrian_Integrative2
             Selection3();
         }
 
+        //Method for sorting the data based on the overall rating that is the worst
         private void ShowWorst()
         {
             restaurantList.Clear();
@@ -623,6 +646,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -635,10 +662,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the Rating sort menu");
@@ -649,6 +674,7 @@ namespace PerezBrian_Integrative2
             Selection3();
         }
 
+        //Method for showing ONLY the unrated restaurants
         private void ShowUnrated()
         {
             restaurantList.Clear();
@@ -665,6 +691,10 @@ namespace PerezBrian_Integrative2
             //Variable used to conatin all information of table
             DataTable TempTable = _connected.QueryEx();
 
+            //formating for a more database looking feel in console
+            Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
+            Console.WriteLine("___________________________________________________________________");
+
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
                 //Tryparsing the number value to be displayed as a string in console
@@ -677,10 +707,8 @@ namespace PerezBrian_Integrative2
                 restaurantList.Add(r);
 
                 //writing out to the console all the restaurants with overall rating and star ratings
-                //Console.WriteLine($"{restaurantList[i].RestaurantName, -5} {restaurantList[i].OverallRating, -8} {Stars.DrawStars(overallrating), -3}");
-
-                Console.Write($"{restaurantList[i].RestaurantName,-15} {"     "}{restaurantList[i].OverallRating,-12} ");
-
+                Console.Write("{0, -60}", $"{restaurantList[i].RestaurantName,-42} {restaurantList[i].OverallRating,-2}");
+                
                 Stars.DrawStars(restaurantList[i].OverallRating);
             }
             Console.WriteLine("Press any key to return to the Rating sort menu");

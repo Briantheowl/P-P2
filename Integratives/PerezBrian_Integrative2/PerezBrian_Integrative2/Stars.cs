@@ -22,33 +22,33 @@ namespace PerezBrian_Integrative2
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write("****");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("*");
+                Console.WriteLine("*", -20);
             }
             else if (overallrating >= 2.50 && overallrating < 3.40)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write("***");  
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("**");
+                Console.WriteLine("**", -20);
             }
             else if (overallrating >= 1.50 && overallrating < 2.40)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("**");  
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("***");
+                Console.WriteLine("***", -20);
             }
             else if (overallrating >= 0.50 && overallrating < 1.40)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("*");  
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("****");
+                Console.WriteLine("****", -20);
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Unrated", -15); 
+                Console.WriteLine("Unrated", 20); 
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
