@@ -1,0 +1,9 @@
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\bin\Debug\PerezBrian_TimeTrackerApp.exe.config
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\bin\Debug\PerezBrian_TimeTrackerApp.exe
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\bin\Debug\PerezBrian_TimeTrackerApp.pdb
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\bin\Debug\MySql.Data.dll
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\obj\Debug\PerezBrian_TimeTrackerApp.csprojAssemblyReference.cache
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\obj\Debug\PerezBrian_TimeTrackerApp.csproj.CoreCompileInputs.cache
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\obj\Debug\PerezBrian_TimeTrackerApp.csproj.CopyComplete
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\obj\Debug\PerezBrian_TimeTrackerApp.exe
+\\vmware-host\Shared Folders\Desktop\VMwareSharedStuff\PerezBrian_TimeTrackerApp\PerezBrian_TimeTrackerApp\obj\Debug\PerezBrian_TimeTrackerApp.pdb
