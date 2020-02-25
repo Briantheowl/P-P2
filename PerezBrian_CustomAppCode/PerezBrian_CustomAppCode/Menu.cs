@@ -27,7 +27,7 @@ namespace PerezBrian_CustomAppCode
         public void Display()
         {
             
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(Title);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("==========================================================");

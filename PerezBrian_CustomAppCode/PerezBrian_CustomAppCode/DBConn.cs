@@ -19,7 +19,7 @@ namespace PerezBrian_CustomAppCode
 
         public DBConn()
         {
-            _conn = new MySqlConnection(@"server= 192.168.0.19;username=brianPerez;password=root;database=PerezBrian_CustomEER;port=8889");
+            _conn = new MySqlConnection(@"server=10.63.25.29;username=brianPerez;password=root;database=PerezBrian_CustomEER;port=8889");
             _conn.Open();
         } 
 

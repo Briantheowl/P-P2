@@ -23,9 +23,11 @@ namespace PerezBrian_CustomAppCode
         //menu used for user to get into application/create an acount for access
         Menu _myMenu = new Menu("Sign up","Login");
         //Menu user for user to do things in the app itself
-        Menu _myMenu2 = new Menu("View all items", "View NPCs", "View Conversion rates", "Exit");
+        Menu _myMenu2 = new Menu("View all items", "View NPCs", "View Conversion rates", "Logout", "Exit");
         //variable used to hold all data from database table
         DataTable tempTable = new DataTable();
+        //list to store users created and to be looped through for validation
+        List<Users> userList = new List<Users>();
         
 
         public Assignment()
@@ -52,8 +54,8 @@ namespace PerezBrian_CustomAppCode
 
 
                 default:
-                    Console.WriteLine("That is no a valid option" +
-                        " Press any key to return to the main menu");
+                    Console.WriteLine("That is not a valid option" +
+                        " Press any key to return to try again");
                     Console.ReadKey();
                     Console.Clear();
                     _myMenu.Display();
@@ -98,7 +100,7 @@ namespace PerezBrian_CustomAppCode
             //user inputed information to login
             userName = Validation.ValidateString("Username:");
             password = Validation.ValidateString("Password:");
-            
+
             _connected.Query("SELECT * FROM Users " +
                 $" WHERE user_name = \"{userName}\" AND password = \"{password}\"");
 
@@ -106,64 +108,90 @@ namespace PerezBrian_CustomAppCode
 
             tempTable = _connected.QueryEx();
 
-            if (tempTable.Rows.Count == 1)
+            for (int i = 0; i < tempTable.Rows.Count; i++)
             {
-                AfterLogin();
+                int.TryParse(tempTable.Rows[i]["user_id"].ToString(), out int uId);
+
+                //Creating User object structure to store all database entries
+                 Users u = new Users(uId, tempTable.Rows[i]["first_name"].ToString(), tempTable.Rows[i]["last_name"].ToString(), tempTable.Rows[i]["user_name"].ToString(), tempTable.Rows[i]["password"].ToString());
+
+                //adding all users to the list
+                userList.Add(u);
+                
             }
-            else
+
+            for (int i = 0; i < userList.Count(); i++)
             {
-                Console.WriteLine("Username/Password is incorrect, press any key to re-enter your data correctly.");
-                Console.ReadKey();
-                Login();
+                
+
+                if (userList[i].User_name == userName)
+                {
+                    
+                    if (userList[i].Password == password)
+                    {
+                        Console.Clear();
+                        AfterLogin();
+                    }
+                    
+                    else
+                    {
+                        Console.WriteLine("Username/Password is incorrect, press any key to re-enter your data correctly.");
+                        Console.ReadKey();
+                        Login();
+                    }
+                    
+                }
+                else if (userList[i].User_name != userName && userList[i].Password != password)
+                {
+                    Console.WriteLine("Username and Password are incorrect, press any key to re-enter your data correctly.");
+                    Console.ReadKey();
+                    Login();
+                }
+                else
+                {
+                    Console.WriteLine("Username/Password is incorrect, press any key to re-enter your data correctly.");
+                    Console.ReadKey();
+                    Login();
+                    
+                    
+                }
             }
+
+            
+
+
             //Closing connnection after login 
             _connected._conn.Close();
         }
 
         private void AfterLogin()
         {
+            
             _myMenu2.Display();
             Selection2();
+        }
 
-            ////Variable used to conatin all information of table
-            //tempTable = _connected.QueryEx();
-            ////setting name of the table to match what data is being displayed
-            //tempTable.TableName = "activity_times_05";
+        private void LogOut()
+        {
+            Console.Clear();
 
-            //Console.WriteLine(tempTable.TableName);
-            //Console.WriteLine("=================================");
-
-            //for (int i = 0; i < tempTable.Rows.Count; i++)
-            //{
-            //    Console.WriteLine($"[{i + 1}]{tempTable.Rows[i]["time_spent_on_activity"].ToString()}");
-            //}
-            //Console.WriteLine($"[{tempTable.Rows.Count + 1}]Back");
-
-            //submenuSelec4 = Validation.ValidateInt("choose a time from the listed data...");
-
-            //if (submenuSelec4 > 0 && submenuSelec4 < tempTable.Rows.Count)
-            //{
-
-            //    //closing previous connection
-            //    _connected._conn.Close();
-
-            //    Console.Clear();
-
-            //    FeedbackAndAdding();
-            //}
-            //else if (submenuSelec4 == tempTable.Rows.Count + 1)
-            //{
-            //    DatePerformed();
-            //}
-            //else
-            //{
-            //    Console.WriteLine("that is not a valid option," +
-            //        " press any key to re-choose a time.");
-
-            //    Console.ReadKey();
-            //    TimeSpent();
-            //}
-
+            string outConfirmation = Validation.ValidateString("Are you sure you want to log out?");
+            Console.Write("yes" + "   " + "no");
+            if (outConfirmation.ToLower() == "yes")
+            {
+                Login();
+            }
+            else if (outConfirmation.ToLower() == "no")
+            {
+                _myMenu2.Display();
+                Selection2();
+            }
+            else
+            {
+                Console.WriteLine("Please only type yes or no to confirm your choice. /r/n" +
+                    "press any key to re-confirm your choice");
+                LogOut();
+            }
         }
 
         private void Selection2()
@@ -183,6 +211,10 @@ namespace PerezBrian_CustomAppCode
                     break;
 
                 case 4:
+                    LogOut();
+                    break;
+
+                case 5:
                     //exiting the program
                     Environment.Exit(0);
                     break;
@@ -211,18 +243,18 @@ namespace PerezBrian_CustomAppCode
 
             Console.WriteLine($"[{tempTable.Rows.Count + 1}]Back");
 
-            int menuInput1 = Validation.ValidateInt("Choose an item number to read it's description...");
+            int itemInput = Validation.ValidateInt("Choose an item number to read it's description...");
 
-            if (menuInput1 > 0 && menuInput1 < tempTable.Rows.Count)
+            if (itemInput > 0 && itemInput < tempTable.Rows.Count)
             {
                 Console.Clear();
 
                 _connected.Query("SELECT itemDescription FROM Items" +
-                    $" WHERE item_id = \"{menuInput1}\"");
+                    $" WHERE item_id = \"{itemInput}\"");
 
                 tempTable = _connected.QueryEx();
 
-                Console.WriteLine(tempTable.Rows[menuInput1]["itemDescription"]);
+                Console.WriteLine(tempTable.Rows[itemInput]["itemDescription"]);
 
                 Console.WriteLine("Press any key to return to the item list...");
                 Console.ReadKey();
@@ -231,7 +263,7 @@ namespace PerezBrian_CustomAppCode
                 AllItems();
                
             }
-            else if (menuInput1 == tempTable.Rows.Count + 1)
+            else if (itemInput == tempTable.Rows.Count + 1)
             {
                 Console.Clear();
                 AfterLogin();
@@ -250,5 +282,63 @@ namespace PerezBrian_CustomAppCode
                 Selection2();
             }
         }
+
+        private void AllNPCs()
+        {
+            Console.Clear();
+
+            _connected.Query("Select * FROM NPCS");
+
+            tempTable = _connected.QueryEx();
+
+            for (int i = 0; i < tempTable.Rows.Count; i++)
+            {
+                Console.WriteLine($"[{i + 1}]{tempTable.Rows[i][""].ToString()}");
+            }
+
+            Console.WriteLine($"[{tempTable.Rows.Count + 1}]Back");
+
+            int itemInput = Validation.ValidateInt("Choose an item number to read it's description...");
+
+            if (itemInput > 0 && itemInput < tempTable.Rows.Count)
+            {
+                Console.Clear();
+
+                _connected.Query("SELECT itemDescription FROM Items" +
+                    $" WHERE item_id = \"{itemInput}\"");
+
+                tempTable = _connected.QueryEx();
+
+                Console.WriteLine(tempTable.Rows[itemInput]["itemDescription"]);
+
+                Console.WriteLine("Press any key to return to the item list...");
+                Console.ReadKey();
+
+                Console.Clear();
+                AllItems();
+
+            }
+            else if (itemInput == tempTable.Rows.Count + 1)
+            {
+                Console.Clear();
+                AfterLogin();
+            }
+            else
+            {
+                Console.WriteLine("that is not a valid option," +
+                    " press any key to re-choose an item.");
+
+                Console.ReadKey();
+                Console.Clear();
+                for (int i = 0; i < tempTable.Rows.Count; i++)
+                {
+                    Console.WriteLine($"[{i + 1}]{tempTable.Rows[i]["itemName"].ToString()}");
+                }
+                Selection2();
+            }
+        }
+        
+
+
     }
 }
