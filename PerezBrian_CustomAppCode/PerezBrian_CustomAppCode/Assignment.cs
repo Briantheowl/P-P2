@@ -23,7 +23,7 @@ namespace PerezBrian_CustomAppCode
         //menu used for user to get into application/create an acount for access
         Menu _myMenu = new Menu("Sign up","Login");
         //Menu user for user to do things in the app itself
-        Menu _myMenu2 = new Menu("View all items", "View NPCs", "View Conversion rates", "Logout", "Exit");
+        Menu _myMenu2 = new Menu("View all items", "View NPCs", "Logout", "Exit");
         //variable used to hold all data from database table
         DataTable tempTable = new DataTable();
         //list to store users created and to be looped through for validation
@@ -101,9 +101,8 @@ namespace PerezBrian_CustomAppCode
             userName = Validation.ValidateString("Username:");
             password = Validation.ValidateString("Password:");
 
-            _connected.Query("SELECT * FROM Users " +
-                $" WHERE user_name = \"{userName}\" AND password = \"{password}\"");
-
+            _connected.Query("SELECT * FROM Users ");
+            
             DataTable tempTable = new DataTable();
 
             tempTable = _connected.QueryEx();
@@ -122,17 +121,13 @@ namespace PerezBrian_CustomAppCode
 
             for (int i = 0; i < userList.Count(); i++)
             {
-                
-
                 if (userList[i].User_name == userName)
                 {
-                    
                     if (userList[i].Password == password)
                     {
                         Console.Clear();
                         AfterLogin();
                     }
-                    
                     else
                     {
                         Console.WriteLine("Username/Password is incorrect, press any key to re-enter your data correctly.");
@@ -156,17 +151,12 @@ namespace PerezBrian_CustomAppCode
                     
                 }
             }
-
-            
-
-
             //Closing connnection after login 
             _connected._conn.Close();
         }
 
         private void AfterLogin()
         {
-            
             _myMenu2.Display();
             Selection2();
         }
@@ -205,16 +195,14 @@ namespace PerezBrian_CustomAppCode
                     break;
 
                 case 2:
+                    AllNPCs();
                     break;
-
+                    
                 case 3:
-                    break;
-
-                case 4:
                     LogOut();
                     break;
 
-                case 5:
+                case 4:
                     //exiting the program
                     Environment.Exit(0);
                     break;
@@ -245,16 +233,16 @@ namespace PerezBrian_CustomAppCode
 
             int itemInput = Validation.ValidateInt("Choose an item number to read it's description...");
 
-            if (itemInput > 0 && itemInput < tempTable.Rows.Count)
+            if (itemInput > 0 && itemInput <= tempTable.Rows.Count)
             {
                 Console.Clear();
 
-                _connected.Query("SELECT itemDescription FROM Items" +
-                    $" WHERE item_id = \"{itemInput}\"");
-
+                _connected.Query($" SELECT itemDescription FROM Items "); 
+                
+                //tempTable.TableName = "Items";
                 tempTable = _connected.QueryEx();
-
-                Console.WriteLine(tempTable.Rows[itemInput]["itemDescription"]);
+                
+                Console.WriteLine(tempTable.Rows[itemInput - 1]["itemDescription"]);
 
                 Console.WriteLine("Press any key to return to the item list...");
                 Console.ReadKey();
@@ -293,32 +281,49 @@ namespace PerezBrian_CustomAppCode
 
             for (int i = 0; i < tempTable.Rows.Count; i++)
             {
-                Console.WriteLine($"[{i + 1}]{tempTable.Rows[i][""].ToString()}");
+                Console.WriteLine($"[{i + 1}]{tempTable.Rows[i]["NPCName"].ToString()}");
             }
 
             Console.WriteLine($"[{tempTable.Rows.Count + 1}]Back");
 
-            int itemInput = Validation.ValidateInt("Choose an item number to read it's description...");
+            int npcInput = Validation.ValidateInt("Choose an NPC number to view the valuables conversion rates...");
 
-            if (itemInput > 0 && itemInput < tempTable.Rows.Count)
+            if (npcInput > 0 && npcInput <= tempTable.Rows.Count)
             {
                 Console.Clear();
 
-                _connected.Query("SELECT itemDescription FROM Items" +
-                    $" WHERE item_id = \"{itemInput}\"");
+                _connected.Query("SELECT NPCName, itemName, itemValue" +
+                    " FROM NPC_item" +
+                    " INNER JOIN NPCS" +
+                    " ON NPC_item.NPC_id = NPCS.NPC_id" +
+                    " INNER JOIN Items" +
+                    " ON Items.item_id = NPC_item.item_id" + 
+                    $" WHERE NPC_item.NPC_id = {npcInput}");
 
                 tempTable = _connected.QueryEx();
 
-                Console.WriteLine(tempTable.Rows[itemInput]["itemDescription"]);
+                Console.WriteLine(tempTable.Rows[npcInput]["NPCName"]);
+                Console.WriteLine("____________________________________________________");
 
-                Console.WriteLine("Press any key to return to the item list...");
+                Console.WriteLine("{0, -55}", $"{"Item Name",-40} {"item Value",-12}");
+                Console.WriteLine("____________________________________________________");
+
+                for (int i = 0; i < tempTable.Rows.Count - 1; i++)
+                {
+                    Console.WriteLine("{0, -60}", $"{tempTable.Rows[npcInput + i]["itemName"], -45}{"     "}{tempTable.Rows[npcInput + i]["itemValue"], -10}");
+                }
+                
+
+                //Console.Write($"{tempTable.Rows[npcInput]["itemName"]}{tempTable.Rows[npcInput]["itemValue"]}");
+
+                Console.WriteLine("Press any key to return to the NPC list...");
                 Console.ReadKey();
 
                 Console.Clear();
-                AllItems();
+                AllNPCs();
 
             }
-            else if (itemInput == tempTable.Rows.Count + 1)
+            else if (npcInput == tempTable.Rows.Count + 1)
             {
                 Console.Clear();
                 AfterLogin();
@@ -326,19 +331,22 @@ namespace PerezBrian_CustomAppCode
             else
             {
                 Console.WriteLine("that is not a valid option," +
-                    " press any key to re-choose an item.");
+                    " press any key to re-choose an NPC.");
 
                 Console.ReadKey();
                 Console.Clear();
                 for (int i = 0; i < tempTable.Rows.Count; i++)
                 {
-                    Console.WriteLine($"[{i + 1}]{tempTable.Rows[i]["itemName"].ToString()}");
+                    Console.WriteLine($"[{i + 1}]{tempTable.Rows[i]["NPCName"].ToString()}");
                 }
-                Selection2();
+                AllNPCs();
             }
         }
         
+        private void ViewExchanges()
+        {
 
+        }
 
     }
 }
