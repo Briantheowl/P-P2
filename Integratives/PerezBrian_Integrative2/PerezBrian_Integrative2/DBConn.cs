@@ -19,7 +19,7 @@ namespace PerezBrian_Integrative2
 
         public DBConn()
         {
-            _conn = new MySqlConnection(@"server=  10.63.39.181;username=brianPerez;password=root;database=SampleRestaurant;port=8889");
+            _conn = new MySqlConnection(@"server=  10.63.8.210;username=brianPerez;password=root;database=SampleRestaurant;port=8889");
             _conn.Open();
         } 
 

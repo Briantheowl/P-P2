@@ -27,15 +27,24 @@ namespace PerezBrian_Integrative2
         private Menu _myMenu2 = new Menu("List Restaurants Alphabetically", "List Restaurants in Reverse Alphabetical", "Sort Restaurants From Best/Most Stars to Worst", "Sort Restaurants From Worst/Least Stars to Best", "Show only X and up", "Exit");
         //third menu for showcasing the "show x an up" option of menu 2
         private Menu _myMenu3 = new Menu("Show the best(5 star ratings)", "Show 4 stars and up", "Show 3 stars and up", "Show the worst(1 star ratings)", "Show unrated(not rated)", "Back");
+        //fourth menu for shocasing the animated bargraphs option of menu 1
+        private Menu _myMenu4 = new Menu("Show Average of Reviews For Restaurants","Dinner Spinner(Selects a Random Restaurant)","Top 10 Restaurants","Back to Main Menu");
         private string _directory = @"..\..\output\";
         private string _file = @"info.json";
         //List to be populated with database info
         List<Restaurant> restaurantList = new List<Restaurant>();
-
+        //variable to hold all data gathered from queries
+        DataTable TempTable;
+        //variable to hold all data gathered from queries
+        DataTable TempTable2;
+        //Randomizer to be used in 2 menu option in menu 4
+        private static Random random = new Random();
 
         //Declaring connection class
         DBConn _connected;
-        
+        //Declaring connection class
+        DBConn _connected2;
+
         //Constructor for class
         public DataWriting()
         {
@@ -73,7 +82,7 @@ namespace PerezBrian_Integrative2
                     break;
 
                 case 3:
-
+                    Selection4();
                     break;
 
                 case 4:
@@ -118,7 +127,7 @@ namespace PerezBrian_Integrative2
             _connected.Query("SELECT * FROM RestaurantProfiles");
 
             //Variable used to conatin all information of table
-            DataTable TempTable = _connected.QueryEx();
+            TempTable = _connected.QueryEx();
 
             for (int i = 0; i < TempTable.Rows.Count; i++)
             {
@@ -321,7 +330,7 @@ namespace PerezBrian_Integrative2
                 " ORDER BY RestaurantName ASC ");
 
             //Variable used to conatin all information of table
-            DataTable TempTable = _connected.QueryEx();
+            TempTable = _connected.QueryEx();
 
             Console.WriteLine("{0, -60}", $"{"Restaurant Name", -40} {"Rating", -10} {"Stars", 13}");
             Console.WriteLine("___________________________________________________________________");
@@ -367,7 +376,7 @@ namespace PerezBrian_Integrative2
                 " ORDER BY RestaurantName DESC ");
 
             //Variable used to conatin all information of table
-            DataTable TempTable = _connected.QueryEx();
+            TempTable = _connected.QueryEx();
 
             //formating for a more database looking feel in console
             Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
@@ -414,7 +423,7 @@ namespace PerezBrian_Integrative2
                 " ORDER BY OverallRating DESC ");
 
             //Variable used to conatin all information of table
-            DataTable TempTable = _connected.QueryEx();
+            TempTable = _connected.QueryEx();
 
             //formating for a more database looking feel in console
             Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
@@ -461,7 +470,7 @@ namespace PerezBrian_Integrative2
                 " ORDER BY OverallRating ASC ");
 
             //Variable used to conatin all information of table
-            DataTable TempTable = _connected.QueryEx();
+            TempTable = _connected.QueryEx();
 
             //formating for a more database looking feel in console
             Console.WriteLine("{0, -60}", $"{"Restaurant Name",-40} {"Rating",-10} {"Stars",13}");
@@ -717,6 +726,139 @@ namespace PerezBrian_Integrative2
 
             _myMenu3.Display();
             Selection3();
+        }
+
+        //Method for easier implementation of switch statement use
+        private void Selection4()
+        {
+            Console.Clear();
+
+            _myMenu4.Display();
+
+            int selection4 = Validation.ValidateInt("Hello admin, how would you like to sort the data?...");
+
+            switch (selection4)
+            {
+                case 1:
+                    AverageReviews();
+                    break;
+
+                case 2:
+                    RandomReview();
+                    break;
+
+                case 3:
+                    break;
+
+                case 4:
+                    Console.Clear();
+                    _myMenu.Display();
+                    Selection();
+                    break;
+
+                default:
+                    Console.WriteLine("That is not a valid option, press any key to re-select a valid menu option");
+                    Console.ReadKey();
+                    Console.Clear();
+                    break;
+            }
+
+        }
+
+        private void AverageReviews()
+        {
+            Console.Clear();
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //instantiating Connection class
+            _connected2 = new DBConn();
+            
+            //formatting
+            Console.WriteLine("{0, -80}", $"{"Restaurant",-40} {"Review Score", 25}");
+            Console.WriteLine("__________________________________________________________________");
+
+            //Looping through all 100 restaurants
+            for (int i = 1; i <= 100; i++)
+            {
+                //first query used to gather each individual restaurant's average
+                _connected.Query("SELECT AVG (ReviewScore) FROM RestaurantReviews" +
+                    $" WHERE RestaurantId = {i}");
+                
+                TempTable = _connected.QueryEx();
+                
+                //second query object to not overide the original query getting the average for each restaurant
+                _connected2.Query("SELECT RestaurantName FROM RestaurantProfiles" +
+                    $" WHERE id = {i}");
+                
+                TempTable2 = _connected2.QueryEx();
+                
+                Console.Write("{0,50}", $"{TempTable2.Rows[0][0].ToString(), -45}{"       "}");
+                Console.WriteLine("{0,30}" ,$"{TempTable.Rows[0][0], -25}");
+
+                //where bargraph method goes
+                Console.WriteLine();
+            }
+
+            //Console.WriteLine(TempTable);
+
+            Console.WriteLine("Press any key to return to the data sorting menu...");
+            Console.ReadKey();
+            Console.Clear();
+            _myMenu4.Display();
+            Selection4();
+        }
+
+        private void RandomReview()
+        {
+            Console.Clear();
+
+            int index = random.Next(0, 100);
+
+            Console.Clear();
+
+            //instantiating Connection class
+            _connected = new DBConn();
+
+            //instantiating Connection class
+            _connected2 = new DBConn();
+
+            //formatting
+            Console.WriteLine("{0, -80}", $"{"Restaurant",-40} {"Review Score",25}");
+            Console.WriteLine("__________________________________________________________________");
+
+            //Looping through all 100 restaurants
+            for (int i = index; i <= index;)
+            {
+                //first query used to gather each individual restaurant's average
+                _connected.Query("SELECT AVG (ReviewScore) FROM RestaurantReviews" +
+                    $" WHERE RestaurantId = {i}");
+
+                TempTable = _connected.QueryEx();
+
+                //second query object to not overide the original query getting the average for each restaurant
+                _connected2.Query("SELECT RestaurantName FROM RestaurantProfiles" +
+                    $" WHERE id = {i}");
+
+                TempTable2 = _connected2.QueryEx();
+
+                Console.Write("{0,50}", $"{TempTable2.Rows[0][0].ToString(),-45}{"       "}");
+                Console.WriteLine("{0,30}", $"{TempTable.Rows[0][0],-25}");
+
+                //where bargraph method goes
+                Console.WriteLine();
+
+                break;
+                
+            }
+
+            Console.WriteLine("Press any key to return to the data sorting menu...");
+            Console.ReadKey();
+            Console.Clear();
+            _myMenu4.Display();
+            Selection4();
+
         }
     }
 }

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="DataWriting.cs" />
     <Compile Include="DBConn.cs" />
+    <Compile Include="DrawingBars.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
